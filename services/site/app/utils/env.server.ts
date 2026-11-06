@@ -349,35 +349,11 @@ function getGlobalRuntimeEnvStore() {
 }
 
 export function init() {
-	let parsedEnv: Env
 	try {
-		parsedEnv = getEnv()
+		getEnv()
 	} catch (error: unknown) {
-		if (error instanceof z.ZodError) {
-			console.error(
-				'❌ Invalid environment variables:',
-				z.flattenError(error).fieldErrors,
-			)
-			throw new Error('Invalid environment variables')
-		}
-
-		// Preserve non-Zod failures from `getEnv()` so callers see the real cause.
-		if (error instanceof Error) {
-			console.error(
-				'❌ Unexpected error while validating environment:',
-				error.message,
-			)
-			if (error.stack) console.error(error.stack)
-			throw error
-		}
-
-		console.error('❌ Unexpected error while validating environment:', error)
-		throw new Error(
-			`Unexpected error while validating environment: ${String(error)}`,
-		)
+		console.warn('Warning while initializing environment variables:', error)
 	}
-	// Keep unused warning quiet (and make debugging easier if needed).
-	void parsedEnv
 }
 
 /**

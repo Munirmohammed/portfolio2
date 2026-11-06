@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "dev": "npm run dev --workspace munir-portfolio",
-    "build": "npm run build --workspace munir-portfolio",
+    "build": "npm run build --workspace munir-portfolio && node other/copy-vercel-output.cjs",
     "build:all": "nx run-many -t build",
     "test": "npm run test --workspace munir-portfolio",
     "test:all": "nx run-many -t test",

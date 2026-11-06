@@ -57,7 +57,8 @@
     "typecheck": "react-router typegen && tsc -b .",
     "mdx:compile": "node other/mdx-artifacts/compile-mdx-artifacts.ts",
     "validate": "../../other/validate",
-    "setup": "npm run db:reset && npm run validate && npm run test:e2e:install && npm run test:e2e:run"
+    "setup": "npm run db:reset && npm run validate && npm run test:e2e:install && npm run test:e2e:run",
+    "postbuild": "node ../../other/copy-vercel-output.cjs"
   },
   "dependencies": {
     "@conform-to/react": "^1.17.1",

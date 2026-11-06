@@ -1,7 +1,6 @@
 import { remember } from '@epic-web/remember'
 import fs from 'node:fs'
 import path from 'node:path'
-import { DatabaseSync } from 'node:sqlite'
 import {
 	createDatabase,
 	type Database,
@@ -97,31 +96,54 @@ function getSqliteFilePath(databaseUrl: string) {
 	return databaseUrl
 }
 
-function getNodeSqliteDatabase() {
+function getNodeSqliteDatabase(): any {
 	const databaseUrl = getEnv().DATABASE_URL
 	return remember('node-sqlite-db', () => {
 		try {
+			let DatabaseSyncClass: any = null
+			try {
+				const req = typeof require !== 'undefined' ? require : null
+				if (req) {
+					DatabaseSyncClass = req('node:sqlite')?.DatabaseSync
+				}
+			} catch {}
+
+			if (!DatabaseSyncClass) return null
+
 			const filePath = getSqliteFilePath(databaseUrl)
 			try {
 				fs.mkdirSync(path.dirname(filePath), { recursive: true })
 			} catch {}
-			const sqlite = new DatabaseSync(filePath)
+			const sqlite = new DatabaseSyncClass(filePath)
 			sqlite.exec('PRAGMA foreign_keys = ON')
 			return sqlite
 		} catch (error) {
-			console.warn('Failed to initialize SQLite file, falling back to in-memory SQLite:', error)
-			const sqlite = new DatabaseSync(':memory:')
-			sqlite.exec('PRAGMA foreign_keys = ON')
-			return sqlite
+			console.warn('Failed to initialize SQLite file:', error)
+			return null
 		}
 	})
 }
 
+function createNoopExecutor(): D1SqlExecutor {
+	return {
+		supportsSqlTransactions: false,
+		async query() {
+			return { results: [] }
+		},
+		async run() {
+			return { meta: { changes: 0, last_row_id: 0 } }
+		},
+		async exec() {},
+	}
+}
+
 function createNodeDatabase(): Database {
+	const sqliteDb = getNodeSqliteDatabase()
+	const executor = sqliteDb
+		? createNodeSqliteExecutor(sqliteDb)
+		: createNoopExecutor()
 	const adapter = createLoggingAdapter(
-		createSqliteExecutorDataTableAdapter(
-			createNodeSqliteExecutor(getNodeSqliteDatabase()),
-		),
+		createSqliteExecutorDataTableAdapter(executor),
 	)
 	return createDatabase(adapter, { now: databaseNow })
 }

@@ -45,3 +45,4 @@ other/wrangler-logs/
 .claude/
 .agents/
 
+/.vercel

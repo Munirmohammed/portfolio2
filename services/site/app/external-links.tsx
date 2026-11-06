@@ -23,9 +23,9 @@ const externalLinks = {
 	betterWithKentRSS: 'https://feeds.transistor.fm/better-with-kent',
 	discord: 'https://kcd.im/discord',
 	translationContributions:
-		'https://github.com/kentcdodds/kentcdodds.com/blob/main/CONTRIBUTING.md#translation-contributions',
-	github: 'https://github.com/kentcdodds',
-	githubRepo: 'https://github.com/kentcdodds/kentcdodds.com',
+		'https://github.com/Munirmohammed/portfolio2/blob/main/CONTRIBUTING.md#translation-contributions',
+	github: 'https://github.com/Munirmohammed',
+	githubRepo: 'https://github.com/Munirmohammed/portfolio2',
 	youtube: 'https://youtube.com/c/KentCDodds-vids/videos',
 	twitter: 'https://x.com/kentcdodds',
 	x: 'https://x.com/kentcdodds',

@@ -1,4 +1,11 @@
 {
+  "workspaces": [
+    "services/*"
+  ],
+  "members": [
+    "hitkeep",
+    "marketing-dashboard"
+  ],
   "name": "kentcdodds.com",
   "private": true,
   "version": "1.0.0",
@@ -9,18 +16,18 @@
   "imports": {
     "#*": "./*"
   },
-  "description": "A React Router v7 version of kentcdodds.com",
+  "description": "Munir Mohammed - Senior Frontend Developer Portfolio",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kentcdodds/kentcdodds.com.git"
+    "url": "git+https://github.com/Munirmohammed/portfolio2.git"
   },
   "keywords": [],
-  "author": "Kent C. Dodds <me@kentcdodds.com> (https://kentcdodds.com/)",
+  "author": "Munir Mohammed <munirmohammed038@gmail.com> (https://github.com/Munirmohammed)",
   "license": "GPL-3.0-only",
   "bugs": {
-    "url": "https://github.com/kentcdodds/kentcdodds.com/issues"
+    "url": "https://github.com/Munirmohammed/portfolio2/issues"
   },
-  "homepage": "https://github.com/kentcdodds/kentcdodds.com#readme",
+  "homepage": "https://github.com/Munirmohammed/portfolio2#readme",
   "type": "module",
   "scripts": {
     "clean": "rimraf ../../node_modules/.cache ./build ./public/build",

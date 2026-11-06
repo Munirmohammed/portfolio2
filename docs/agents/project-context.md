@@ -202,7 +202,8 @@ Kody/workflows/GitHub create the initial PR as a substitute.
   as the seed admin user (`me@kentcdodds.com` / `iliketwix`).
 - If `node --version` still reports an older version after `nvm use 26`, the
   `/exec-daemon/node` shim is ahead of nvm on `PATH`; prefix commands with
-  `PATH="$(dirname "$(nvm which 26)"):$PATH"` when testing.- **Third-party dashboards** — `services/site/hitkeep` (Angular 22 analytics/worker) and `services/site/marketing-dashboard` (Next.js 16 marketing-ops control center) are registered in the workspace manifest but are separate apps on different stacks (Angular/pnpm and Next.js/SQLite). They are not part of the React Router/Cloudflare Workers site and do not share its Node 26 requirement. See `docs/agents/third-party-dashboards.md` for run, test, and stack-mismatch guidance.
+  `PATH="$(dirname "$(nvm which 26)"):$PATH"` when testing.
+- **Portfolio projects** — `services/site/hitkeep` (Angular 22) and `services/site/marketing-dashboard` (Next.js 16 + SQLite) are your two listed portfolio projects under `services/site/`. They are registered in the workspace manifest and live next to the Kent site, but they are separate apps on different stacks (Angular/pnpm and Next.js/SQLite). They are not part of the React Router/Cloudflare Workers site and do not share its Node 26 requirement, so run/build/test them from their own directories. See `docs/agents/third-party-dashboards.md` for the project list, run commands, and stack-mismatch guidance.
 - Playwright browsers (needed for `npm run test:browser` and `test:e2e:*`) are
   pre-installed in the VM snapshot under `~/.cache/ms-playwright`, so you should
   not normally need to reinstall them. If a browser is missing or its revision
@@ -220,7 +221,7 @@ Kody/workflows/GitHub create the initial PR as a substitute.
   server on port 8811). It fails to start if a dev server is already bound to
   port 3000/3099 (the MDX sidecar), so stop `npm run dev` first, or set
   `PW_REUSE_EXISTING_SERVER=true` to reuse a running dev server.
-- **Third-party dashboards** (see `docs/agents/third-party-dashboards.md`): `services/site/hitkeep` (Angular 22) and `services/site/marketing-dashboard` (Next.js 16 + SQLite) are registered in the workspace manifest but are separate apps on different stacks. They are not part of the React Router/Cloudflare Workers site and do not share its Node 26 requirement, so run/build/test them from their own directories.
+- **Portfolio projects** — `services/site/hitkeep` (Angular 22) and `services/site/marketing-dashboard` (Next.js 16 + SQLite) are your two listed portfolio projects under `services/site/`. They are registered in the workspace manifest and live next to the Kent site, but they are separate apps on different stacks, so run/build/test them from their own directories. See `docs/agents/third-party-dashboards.md` for the project list and run commands.
 
 - In cloud VMs, Chrome may block camera/microphone access by default. Visiting
   `/calls/record/new` can hit the route ErrorBoundary unless `localhost` is

@@ -12,8 +12,8 @@ and stable.
 
 ## Agent docs (source of truth)
 
-- `docs/agents/project-context.md` (setup, commands, third-party dashboards)
-- `docs/agents/third-party-dashboards.md` (services/site/hitkeep and services/site/marketing-dashboard registries, stack mismatch)
+- `docs/agents/project-context.md` (setup, commands, portfolio projects)
+- `docs/agents/third-party-dashboards.md` (your two portfolio projects: hitkeep and marketing-dashboard, registered under services/site)
 - `docs/agents/cloudflare-worker-architecture.md` (worker topology, deploy, D1)
 - `docs/agents/data-table-conventions.md` (runtime DB access patterns)
 - `docs/agents/code-style.md`

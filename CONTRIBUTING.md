@@ -75,7 +75,7 @@ instructions:
 > requests from branches on your fork. To do this, run:
 >
 > ```
-> git remote add upstream https://github.com/kentcdodds/kentcdodds.com.git
+> git remote add upstream https://github.com/Munirmohammed/portfolio2.git
 > git fetch upstream
 > git branch --set-upstream-to=upstream/main main
 > ```
@@ -224,7 +224,7 @@ npm run db:reset --workspace kentcdodds.com
 ```
 
 This applies migrations to the local Miniflare D1 database and runs the seed
-script (admin user `me@kentcdodds.com` / `iliketwix`).
+script (admin user `munirmohammed038@gmail.com` / `iliketwix`).
 
 Remote D1 migrations: `npm run d1:migrations:apply:production --workspace site-worker`
 (after widen steps land on `main`). See
@@ -253,5 +253,5 @@ requests! Thanks!
 
 <!-- prettier-ignore-start -->
 [egghead]: https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github
-[issues]: https://github.com/kentcdodds/kentcdodds.com/issues
+[issues]: https://github.com/Munirmohammed/portfolio2/issues
 <!-- prettier-ignore-end -->

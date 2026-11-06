@@ -1,0 +1,14 @@
+{
+  "name": "site",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "services/site",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "command": "react-router build",
+      "options": {
+        "cwd": "services/site"
+      }
+    }
+  }
+}

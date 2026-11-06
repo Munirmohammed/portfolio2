@@ -10,9 +10,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 	const rss = `
     <rss xmlns:blogChannel="${blogUrl}" version="2.0">
       <channel>
-        <title>Kent C. Dodds Blog</title>
+        <title>Munir Mohammed Blog</title>
         <link>${blogUrl}</link>
-        <description>The Kent C. Dodds Blog</description>
+        <description>The Munir Mohammed Blog</description>
         <language>en-us</language>
         <generator>Kody the Koala</generator>
         <ttl>40</ttl>

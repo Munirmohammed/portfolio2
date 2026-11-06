@@ -1,16 +1,17 @@
 {
   "workspaces": [
-    "services/*"
+    "services/hitkeep",
+    "services/marketing-dashboard"
   ],
   "members": [
     "hitkeep",
     "marketing-dashboard"
   ],
-  "name": "kentcdodds.com",
+  "name": "munir-portfolio",
   "private": true,
   "version": "1.0.0",
   "engines": {
-    "node": "26",
+    "node": ">=20",
     "npm": ">=10"
   },
   "imports": {
@@ -31,7 +32,7 @@
   "type": "module",
   "scripts": {
     "clean": "rimraf ../../node_modules/.cache ./build ./public/build",
-    "prebuild": "npm run clean && echo All clean \u00e2\u0153\u00a8",
+    "prebuild": "npm run clean && echo All clean âœ¨",
     "build": "run-s build:*",
     "build:router": "vite build --sourcemap && vite build --ssr --sourcemap",
     "build:info": "node ../../other/generate-build-info.ts",
@@ -166,6 +167,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@types/react-table": "^7.7.20",
+    "@vercel/react-router": "^1.3.7",
     "@vitest/browser-playwright": "^4.0.18",
     "concurrently": "^9.2.1",
     "cookie": "^1.1.1",
@@ -184,9 +186,5 @@
     "vitest-browser-react": "^2.0.5",
     "wrangler": "^4.107.0"
   },
-  "prettier": "@epic-web/config/prettier",
-  "workspaces": [
-    "services/hitkeep",
-    "services/marketing-dashboard"
-  ]
+  "prettier": "@epic-web/config/prettier"
 }

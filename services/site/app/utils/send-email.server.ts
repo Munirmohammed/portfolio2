@@ -200,7 +200,7 @@ async function sendVerificationCodeEmail({
 	verificationUrl: string
 	team?: string | null
 }) {
-	const sender = `"Kent C. Dodds Team" <team+kcd@kentcdodds.com>`
+	const sender = `"Munir Mohammed" <munirmohammed038@gmail.com>`
 	const { hostname } = new URL(domainUrl)
 	const randomSportyKody = getRandomFlyingKody(
 		team ? getOptionalTeam(team) : undefined,
@@ -282,7 +282,7 @@ async function sendSignupVerificationEmail({
 	return sendVerificationCodeEmail({
 		emailAddress,
 		domainUrl,
-		subject: `Your verification code for kentcdodds.com`,
+		subject: `Your verification code for portfolio`,
 		title: `Verify your email address`,
 		verificationCode,
 		verificationUrl,
@@ -305,7 +305,7 @@ async function sendPasswordResetEmail({
 	return sendVerificationCodeEmail({
 		emailAddress,
 		domainUrl,
-		subject: `Reset your password for kentcdodds.com`,
+		subject: `Reset your password for portfolio`,
 		title: `Reset your password`,
 		verificationCode,
 		verificationUrl,

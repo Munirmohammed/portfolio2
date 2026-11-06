@@ -187,7 +187,7 @@ function computeAllowedActionOrigins(values: BaseEnv) {
 	if (configuredOrigins.length > 0) return configuredOrigins
 	if (values.NODE_ENV !== 'production') return ['**']
 
-	const productionOrigins = ['kentcdodds.com', '*.kentcdodds.com']
+	const productionOrigins = ['munirmohammed.com', '*.munirmohammed.com', '*.vercel.app', '*.pages.dev']
 	return productionOrigins
 }
 

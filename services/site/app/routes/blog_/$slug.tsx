@@ -288,10 +288,10 @@ function ArticleFooter({
 	const [team] = useTeam()
 	const tweetMessage =
 		team === 'UNKNOWN'
-			? `I just read "${title}" by @kentcdodds\n\n`
+			? `I just read "${title}" by @Munirmohammed\n\n`
 			: `I just scored a point for the ${team.toLowerCase()} team ${
 					teamEmoji[team]
-				} by reading "${title}" by @kentcdodds\n\n`
+				} by reading "${title}" by @Munirmohammed\n\n`
 
 	return (
 		<Grid>
@@ -353,7 +353,7 @@ function ArticleFooter({
 				/>
 			</div>
 			<div className="lg:col-start:5 col-span-full lg:col-span-6">
-				<H6 as="div">Written by Kent C. Dodds</H6>
+				<H6 as="div">Written by Munir Mohammed</H6>
 				<Paragraph className="mt-3 mb-12">
 					{`
 Kent C. Dodds is a JavaScript software engineer and teacher. Kent's taught hundreds
@@ -361,7 +361,7 @@ of thousands of people how to make the world a better place with quality softwar
 development tools and practices. He lives with his wife and four kids in Utah.
           `.trim()}
 				</Paragraph>
-				<ArrowLink to="/about">Learn more about Kent</ArrowLink>
+				<ArrowLink to="/about">Learn more about Munir</ArrowLink>
 			</div>
 		</Grid>
 	)

@@ -239,7 +239,7 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
 				) : (
 					<div className="col-span-full">
 						<Paragraph textColorClassName="text-secondary">
-							{`Try a query like "react testing library", "call kent authentication", or "youtube closure".`}
+							{`Try a query like "react", "dashboard architecture", or "youtube closure".`}
 						</Paragraph>
 					</div>
 				)}
@@ -365,7 +365,7 @@ function SearchHitRow({ r }: { r: SearchResult }) {
 		href.startsWith('/youtube')
 			? (() => {
 					try {
-						const u = new URL(href, 'https://kentcdodds.com')
+						const u = new URL(href, 'https://munirmohammed.com')
 						if (r.title) u.searchParams.set('title', r.title)
 						const desc = r.summary ?? r.snippet
 						if (desc) {

@@ -42,13 +42,13 @@ export async function loader({ request }: Route.LoaderArgs) {
 	const { talks, tags } = talksAndTags
 	const talkCount = talks.length
 	const deliveryCount = talks.flatMap((t) => t.deliveries).length
-	const title = `${talkCount} talks by Kent all about software development`
+	const title = `${talkCount} talks and workshops by Munir Mohammed`
 	const topicsList = listify(tags.slice(0, 6))
 	const socialMetas = (
 		await import('#app/og/page-meta.server.ts')
 	).buildPageSocialMetasForRequest(request, {
 		title,
-		description: `Check out Kent's ${talkCount} talks he's delivered ${deliveryCount} times. Topics include: ${topicsList}`,
+		description: `Check out Munir's ${talkCount} talks he's delivered ${deliveryCount} times. Topics include: ${topicsList}`,
 		socialImage: {
 			kind: 'generic-social',
 			words: title,

@@ -14,12 +14,12 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 	const socialMetas = (
 		await import('#app/og/page-meta.server.ts')
 	).buildPageSocialMetasForRequest(request, {
-		title: talk ? `${title} by Kent C. Dodds` : title,
+		title: talk ? `${title} by Munir Mohammed` : title,
 		description: talk ? talk.description : '404: Talk not found',
 		socialImage: talk
 			? {
 					kind: 'social-preview',
-					preTitle: 'Checkout this talk by Kent',
+					preTitle: 'Checkout this talk by Munir',
 					title,
 					featuredImage: 'kent/kent-speaking-all-things-open',
 				}

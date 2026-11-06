@@ -219,7 +219,7 @@ function createSiteTools(): Array<ModelContextToolLike> {
 			name: 'navigate_site',
 			title: 'Navigate site',
 			description:
-				'Navigate to a key section of kentcdodds.com or open the site search page for a query.',
+				'Navigate to a key section of the portfolio or open the site search page for a query.',
 			inputSchema: {
 				type: 'object',
 				properties: {

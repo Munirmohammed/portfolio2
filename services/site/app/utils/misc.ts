@@ -201,7 +201,7 @@ export function getDisplayUrl(requestInfo?: { origin: string; path: string }) {
 }
 
 export function getOrigin(requestInfo?: { origin?: string; path: string }) {
-	return requestInfo?.origin ?? 'https://kentcdodds.com'
+	return requestInfo?.origin ?? 'https://munirmohammed.com'
 }
 
 export function getUrl(requestInfo?: { origin: string; path: string }) {

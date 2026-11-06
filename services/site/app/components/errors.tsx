@@ -256,7 +256,7 @@ function FourOhFour({
 				possibleMatchesQuery={effectiveQuery}
 				heroProps={{
 					title: "404 - Oh no, you found a page that's missing stuff.",
-					subtitle: `"${pathname}" is not a page on kentcdodds.com. So sorry.`,
+					subtitle: `"${pathname}" could not be found.`,
 					image: <MissingSomething className="rounded-lg" aspectRatio="3:4" />,
 					action: heroAction,
 				}}

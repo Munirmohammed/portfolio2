@@ -1,6 +1,6 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "kentcdodds-com-dev",
+	"name": "munir-portfolio-dev",
 	"main": "workers/dev-entry.ts",
 	"compatibility_date": "2026-03-17",
 	"compatibility_flags": [
@@ -16,7 +16,7 @@
 	"d1_databases": [
 		{
 			"binding": "APP_DB",
-			"database_name": "kentcdodds-com-dev",
+			"database_name": "munir-portfolio-dev",
 			"database_id": "local-dev-placeholder",
 			"migrations_dir": "migrations"
 		}
@@ -34,8 +34,8 @@
 	"r2_buckets": [
 		{
 			"binding": "MEDIA_BUCKET",
-			"bucket_name": "kentcdodds-com-dev-media",
-			"preview_bucket_name": "kentcdodds-com-dev-media"
+			"bucket_name": "munir-portfolio-dev-media",
+			"preview_bucket_name": "munir-portfolio-dev-media"
 		}
 	],
 	"images": {

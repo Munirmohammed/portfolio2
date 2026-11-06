@@ -36,6 +36,11 @@ export default async function handleDocumentRequest(...args: DocRequestArgs) {
 		loadContext,
 	] = args
 
+	// Reject backslash / encoded-backslash paths (path-normalization tricks).
+	if (/\\|%5c/i.test(new URL(request.url).pathname)) {
+		return new Response('Bad Request', { status: 400 })
+	}
+
 	for (const handler of otherRoutes) {
 		try {
 			const otherRouteResponse = await handler(request, reactRouterContext)

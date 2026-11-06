@@ -169,33 +169,62 @@ export function createMailtoHref({
 		: `mailto:${email}`
 }
 
+const FALLBACK_DOMAIN_URL = 'https://munirmohammed.com'
+// Plain host[:port] only: no userinfo, path, query, whitespace or commas.
+const SAFE_HOST_PATTERN =
+	/^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*(?::\d{1,5})?$/i
+
+function getConfiguredOrigin() {
+	// Optional canonical origin (e.g. https://munirmohammed.com). When set, it is
+	// used instead of anything derived from request headers.
+	const configured =
+		typeof process !== 'undefined' ? process.env?.SITE_URL?.trim() : undefined
+	if (!configured) return null
+	try {
+		const url = new URL(configured)
+		if (url.protocol === 'http:' || url.protocol === 'https:') return url.origin
+	} catch {}
+	return null
+}
+
 /**
- * @returns domain URL (without a ending slash, like: https://kentcdodds.com)
+ * @returns canonical domain URL (SITE_URL if set, else a validated request host)
+ *  (without a ending slash, like: https://kentcdodds.com)
  */
 export function getDomainUrl(request: Request) {
-	try {
-		const host =
-			request.headers.get('X-Forwarded-Host') ??
-			request.headers.get('x-forwarded-host') ??
-			request.headers.get('host') ??
-			(request.url ? new URL(request.url).host : null)
-		if (host) {
-			const protocol =
-				request.headers.get('X-Forwarded-Proto') ??
-				request.headers.get('x-forwarded-proto') ??
-				(host.includes('localhost') ? 'http' : 'https')
-			return `${protocol}://${host}`
-		}
-	} catch {}
+	const configured = getConfiguredOrigin()
+	if (configured) return configured
+
+	const rawHost =
+		request.headers.get('x-forwarded-host') ?? request.headers.get('host')
+	// Only the first value if a proxy chain appended several.
+	const host = rawHost?.split(',')[0]?.trim()
+	if (host && SAFE_HOST_PATTERN.test(host)) {
+		const forwardedProto = request.headers
+			.get('x-forwarded-proto')
+			?.split(',')[0]
+			?.trim()
+			.toLowerCase()
+		const protocol =
+			forwardedProto === 'http' || forwardedProto === 'https'
+				? forwardedProto
+				: host.startsWith('localhost')
+					? 'http'
+					: 'https'
+		return `${protocol}://${host}`
+	}
 
 	try {
-		if (request.url) {
-			const parsed = new URL(request.url)
+		const parsed = new URL(request.url)
+		if (
+			(parsed.protocol === 'http:' || parsed.protocol === 'https:') &&
+			SAFE_HOST_PATTERN.test(parsed.host)
+		) {
 			return `${parsed.protocol}//${parsed.host}`
 		}
 	} catch {}
 
-	return 'https://munirmohammed.com'
+	return FALLBACK_DOMAIN_URL
 }
 
 export function isResponse(response: unknown): response is Response {

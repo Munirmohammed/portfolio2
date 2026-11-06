@@ -128,6 +128,11 @@ export default defineConfig(async ({ command }) => {
 					),
 				}
 			: undefined,
+		// gsap ships ESM without "type": "module", so Node can't load it when it is
+		// left as an external import in the serverless bundle. Bundle it instead.
+		ssr: {
+			noExternal: ['gsap'],
+		},
 		resolve: {
 			alias: [
 				{

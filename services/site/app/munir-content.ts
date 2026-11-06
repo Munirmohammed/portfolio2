@@ -23,6 +23,42 @@ export type Project = {
 
 export const projects: Array<Project> = [
 	{
+		title: 'Marketing Dashboard',
+		year: '2026',
+		summary:
+			'High-performance marketing operations control center — campaign orchestration, live telemetry feeds, CRM kanban, and AI agent coordination.',
+		highlights: [
+			'Full-stack Next.js 16 control center with fast SQLite WAL-mode state sync engine.',
+			'Interactive CRM pipeline with drag-and-drop kanban board, sequence analytics, and human-in-the-loop approvals.',
+			'Modernized glassmorphic UI with custom design tokens, dark/light theme, and live telemetry widgets.',
+		],
+		stack: ['Next.js 16', 'React 19', 'TypeScript', 'Tailwind CSS 4', 'SQLite', 'Zustand', 'Recharts'],
+		links: [
+			{
+				label: 'Source',
+				href: 'https://github.com/Munirmohammed/marketing-dashboard',
+			},
+		],
+	},
+	{
+		title: 'HitKeep',
+		year: '2026',
+		summary:
+			'Self-hostable, privacy-friendly web analytics platform — cookieless tracking, real-time visitor telemetry, and modern KPI dashboard.',
+		highlights: [
+			'Built with Angular standalone components and reactive architecture for real-time web telemetry.',
+			'Sub-millisecond tracking SDK, automated spam filtering, and custom KPI performance cards.',
+			'Decluttered layout with modern elevated design tokens, dark/light theme, and accessible data tables.',
+		],
+		stack: ['Angular', 'TypeScript', 'SCSS', 'Go', 'Web Analytics', 'Docker'],
+		links: [
+			{
+				label: 'Source',
+				href: 'https://github.com/Munirmohammed/hitkeep',
+			},
+		],
+	},
+	{
 		title: 'Hamer Admin',
 		year: '2026',
 		summary:

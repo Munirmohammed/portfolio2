@@ -49,6 +49,16 @@ experience:
     highlights:
       - 'Developed e-commerce and ERP frontends for Scandinavian and European retail channels.'
       - 'Integrated browser-side TensorFlow.js forecasting and real-time Chart.js KPI telemetry.'
+projects:
+  - title: 'Marketing Dashboard'
+    summary: 'Full-stack Next.js 16 marketing operations and campaign control center with SQLite and real-time analytics.'
+    link: 'https://github.com/Munirmohammed/marketing-dashboard'
+  - title: 'HitKeep'
+    summary: 'Modern, privacy-first web analytics platform featuring real-time telemetry, custom KPI cards, and spam filtering.'
+    link: 'https://github.com/Munirmohammed/hitkeep'
+  - title: 'Hamer Admin'
+    summary: 'Operations dashboard for a fitness platform with 20 routes of React Server Components and JWT auth.'
+    link: 'https://github.com/Munirmohammed/Hamer-Frontend'
 education:
   degree: 'B.Sc. in Software Engineering'
   institution: 'Addis Ababa University'

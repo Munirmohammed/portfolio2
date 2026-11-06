@@ -1,240 +1,105 @@
-import {
-	data as json,
-	type HeadersFunction,
-	type MetaFunction,
-	Link,
-	useFetcher,
-} from 'react-router'
-import { Button } from '#app/components/button.tsx'
-import {
-	ButtonGroup,
-	ErrorPanel,
-	Field,
-} from '#app/components/form-elements.tsx'
+import { type MetaFunction } from 'react-router'
 import { Grid } from '#app/components/grid.tsx'
-import {
-	HeroSection,
-	getHeroImageProps,
-} from '#app/components/sections/hero-section.tsx'
-import { H2, Paragraph } from '#app/components/typography.tsx'
-import { images } from '#app/images.tsx'
-import { handleFormSubmission } from '#app/utils/actions.server.ts'
-import { sendEmail } from '#app/utils/send-email.server.ts'
-import { requireUser } from '#app/utils/session.server.ts'
-import { useRootData } from '#app/utils/use-root-data.ts'
-import { type Route } from './+types/contact'
+import { Spacer } from '#app/components/spacer.tsx'
+import { H1, H2, Paragraph } from '#app/components/typography.tsx'
+import { site } from '#app/munir-content.ts'
 
-function getErrorForSubject(subject: string | null) {
-	if (!subject) return `Subject is required`
-	if (subject.length <= 5) return `Subject is too short`
-	if (subject.length > 120) return `Subject is too long`
-	return null
-}
+export const meta: MetaFunction = () => [
+	{ title: `Contact — ${site.name}` },
+	{
+		name: 'description',
+		content: `Get in touch with ${site.name} about senior frontend and full-stack work.`,
+	},
+]
 
-function getErrorForBody(body: string | null) {
-	if (!body) return `Body is required`
-	if (body.length <= 40) return `Body is too short`
-	if (body.length > 1001) return `Body is too long`
-	return null
-}
-
-type ActionData = {
-	status: 'success' | 'error'
-	fields: {
-		subject?: string | null
-		body?: string | null
-	}
-	errors: {
-		generalError?: string
-		subject?: string | null
-		body?: string | null
-	}
-}
-
-export async function action({ request }: Route.ActionArgs) {
-	const user = await requireUser(request)
-	return handleFormSubmission<ActionData>({
-		request,
-		validators: {
-			subject: getErrorForSubject,
-			body: getErrorForBody,
-		},
-		handleFormValues: async (fields) => {
-			const { subject, body } = fields
-
-			// this bit is included so I can have a filter that ensures
-			// messages sent from the contact form never end up in spam.
-			const noSpamMessage = '- Sent via the KCD Contact Form'
-
-			// Cloudflare Email Sending requires `from` to be on our domain, so
-			// the visitor's address goes in replyTo (replying still works).
-			await sendEmail({
-				from: `"${user.firstName} (via KCD contact form)" <contact@kentcdodds.com>`,
-				replyTo: `"${user.firstName}" <${user.email}>`,
-				to: `"Kent C. Dodds" <me@kentcdodds.com>`,
-				subject,
-				text: `${body}\n\nFrom: ${user.firstName} <${user.email}>\n${noSpamMessage}`,
-			})
-
-			const actionData: ActionData = { fields, status: 'success', errors: {} }
-			return json(actionData)
-		},
-	})
-}
-
-export const headers: HeadersFunction = () => ({
-	'Cache-Control': 'private, max-age=3600',
-	Vary: 'Cookie',
-})
-
-export async function loader({ request }: Route.LoaderArgs) {
-	return {
-		socialMetas: (
-			await import('#app/og/page-meta.server.ts')
-		).buildPageSocialMetasForRequest(request, {
-			title: 'Contact Kent C. Dodds',
-			description: 'Send Kent C. Dodds a personal email.',
-			socialImage: {
-				kind: 'generic-social',
-				words: 'Shoot Kent an email',
-				featuredImage: 'unsplash/photo-1563225409-127c18758bd5',
-			},
-		}),
-	}
-}
-
-export const meta: MetaFunction<typeof loader> = ({ data }) =>
-	data?.socialMetas ?? []
+const channels = [
+	{
+		label: 'Email',
+		value: site.email,
+		href: `mailto:${site.email}`,
+		note: 'Best for anything substantive — I answer within a day or two.',
+	},
+	{
+		label: 'LinkedIn',
+		value: 'munir-mohammed',
+		href: site.linkedin,
+		note: 'Recruiters and hiring managers usually start here.',
+	},
+	{
+		label: 'GitHub',
+		value: 'Munirmohammed',
+		href: site.github,
+		note: 'Code, side projects and everything in progress.',
+	},
+]
 
 export default function ContactRoute() {
-	const contactFetcher = useFetcher<typeof action>()
-	const { user } = useRootData()
-	const actionData = contactFetcher.data as ActionData | undefined
-	const isDone = contactFetcher.state === 'idle' && actionData != null
-	const emailSuccessfullySent = isDone && actionData.status === 'success'
-
 	return (
-		<div>
-			<HeroSection
-				title="Send me an email."
-				subtitle="Like in the old days."
-				image={
-					<img
-						{...getHeroImageProps(images.kentProfile, {
-							className:
-								'max-h-[50vh] rounded-bl-3xl rounded-br-[25%] rounded-tl-[25%] rounded-tr-3xl',
-						})}
-					/>
-				}
-			/>
-			<main>
-				<contactFetcher.Form
-					method="POST"
-					noValidate
-					aria-describedby="contact-form-error"
-				>
-					<Grid>
-						<div className="col-span-full mb-12 lg:col-span-8 lg:col-start-3">
-							<H2>Email me</H2>
-							<Paragraph>
-								{`
-                  I do my best to respond, but unfortunately I can't always
-                  respond to every email I receive. If you have a support
-                  request about my open source work, please open an issue
-                  on the GitHub repo instead. If you have a support need on one of
-                  my courses, please email the team (`}
-								<a href="mailto:team@epicreact.dev">team@epicreact.dev</a>
-								{`, `}
-								<a href="mailto:help@testingjavascript.com">
-									help@testingjavascript.com
-								</a>
-								{`, or `}
-								<a href="mailto:support@egghead.io">support@egghead.io</a>
-								{`) instead. I'll just forward your message to them anyway.`}
-							</Paragraph>
-							<div className="bg-secondary mt-6 rounded-lg p-4">
-								<Paragraph>
-									Have a general question? The best place is the{' '}
-									<Link to="/calls" className="underline">
-										Call Kent podcast
-									</Link>
-									. You can record your question or type it if you don&apos;t
-									want to record yourself.
-								</Paragraph>
-							</div>
-						</div>
+		<main className="pb-24">
+			<Grid>
+				<div className="col-span-full lg:col-span-7">
+					<H1>Let&apos;s talk</H1>
+					<Paragraph className="mt-6">
+						I&apos;m open to senior frontend and full-stack roles, remote or
+						based in Addis Ababa, and to freelance work where the problem is
+						interesting. The quickest route is email — I read everything, even
+						when I can&apos;t reply.
+					</Paragraph>
+				</div>
+			</Grid>
 
-						<div className="col-span-full lg:col-span-8 lg:col-start-3">
-							{user ? (
-								<>
-									<Field
-										name="name"
-										label="Name"
-										placeholder="Your name"
-										disabled={true}
-										defaultValue={user.firstName}
-									/>
-									<Field
-										type="email"
-										label="Email"
-										placeholder="person.doe@example.com"
-										disabled={true}
-										defaultValue={user.email}
-										name="email"
-									/>
-									<Field
-										name="subject"
-										label="Subject"
-										placeholder="No subject"
-										defaultValue={actionData?.fields.subject ?? ''}
-										error={actionData?.errors.subject}
-									/>
-									<Field
-										name="body"
-										label="Body"
-										type="textarea"
-										placeholder="A clear and concise message works wonders."
-										rows={8}
-										defaultValue={actionData?.fields.body ?? ''}
-										error={actionData?.errors.body}
-									/>
-									{emailSuccessfullySent ? (
-										`Hooray, email sent! 🎉`
-									) : (
-										// IDEA: show a loading state here
-										<ButtonGroup>
-											<Button
-												type="submit"
-												disabled={contactFetcher.state !== 'idle'}
-											>
-												Send message
-											</Button>
-											<Button variant="secondary" type="reset">
-												Reset form
-											</Button>
-										</ButtonGroup>
-									)}
-									{actionData?.errors.generalError ? (
-										<ErrorPanel id="contact-form-error">
-											{actionData.errors.generalError}
-										</ErrorPanel>
-									) : null}
-								</>
-							) : (
-								<div className="col-span-full mb-12 lg:col-span-8 lg:col-start-3">
-									<Paragraph>
-										Note: due to spam issues, you have to confirm your email by{' '}
-										<Link to="/login" className="underline">
-											signing up for an account
-										</Link>{' '}
-										on my website first.
-									</Paragraph>
-								</div>
-							)}
+			<Spacer size="2xs" />
+
+			<Grid>
+				{channels.map((channel) => (
+					<a
+						key={channel.label}
+						href={channel.href}
+						className="col-span-full mt-6 block rounded-lg border border-gray-200 p-6 transition hover:border-gray-400 md:col-span-4 dark:border-gray-700 dark:hover:border-gray-500"
+					>
+						<H2 className="text-lg">{channel.label}</H2>
+						<p className="mt-1 text-base font-medium text-gray-900 dark:text-white">
+							{channel.value}
+						</p>
+						<p className="mt-3 text-sm text-gray-500 dark:text-slate-500">
+							{channel.note}
+						</p>
+					</a>
+				))}
+			</Grid>
+
+			<Spacer size="2xs" />
+
+			<Grid>
+				<div className="col-span-full border-t border-gray-200 pt-8 dark:border-gray-700">
+					<dl className="grid grid-cols-1 gap-6 md:grid-cols-3">
+						<div>
+							<dt className="text-sm text-gray-500 dark:text-slate-500">
+								Based in
+							</dt>
+							<dd className="text-base text-gray-900 dark:text-white">
+								{site.location}
+							</dd>
 						</div>
-					</Grid>
-				</contactFetcher.Form>
-			</main>
-		</div>
+						<div>
+							<dt className="text-sm text-gray-500 dark:text-slate-500">
+								Phone
+							</dt>
+							<dd className="text-base text-gray-900 dark:text-white">
+								{site.phone}
+							</dd>
+						</div>
+						<div>
+							<dt className="text-sm text-gray-500 dark:text-slate-500">
+								Availability
+							</dt>
+							<dd className="text-base text-gray-900 dark:text-white">
+								Open to remote roles
+							</dd>
+						</div>
+					</dl>
+				</div>
+			</Grid>
+		</main>
 	)
 }

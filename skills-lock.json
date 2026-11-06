@@ -6,6 +6,12 @@
       "sourceType": "github",
       "skillPath": "skills/ship-pr/SKILL.md",
       "computedHash": "42c12c9440db693abd17b1fa46cddc36c6d5d5c30bb6779b7985726eb7c51b37"
+    },
+    "stageshow": {
+      "source": "benjitaylor/skills",
+      "sourceType": "github",
+      "skillPath": "stageshow/SKILL.md",
+      "computedHash": "e61d752c729645bd4b96fb8dd6e31769aaaf0c4b409fd4bfc7ef8be79af84774"
     }
   }
 }

@@ -2,17 +2,14 @@ import './navbar.css'
 import { useHotkey } from '@tanstack/react-hotkeys'
 import { clsx } from 'clsx'
 import { useCombobox } from 'downshift'
-import { motion, useAnimation, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import * as React from 'react'
 import { Link, useFetcher, useLocation, useNavigate } from 'react-router'
-import { kodyProfiles } from '#app/images.tsx'
 import { HOTKEY_OPEN_SEARCH } from '#app/utils/hotkeys.ts'
-import { type OptionalTeam, useDebounce } from '#app/utils/misc-react.tsx'
+import { useDebounce } from '#app/utils/misc-react.tsx'
 import { useRequestInfo } from '#app/utils/request-info.ts'
-import { useTeam } from '#app/utils/team-provider.tsx'
 import { THEME_FETCHER_KEY, useOptimisticThemeMode } from '#app/utils/theme.tsx'
-import { useOptionalUser, useRootData } from '#app/utils/use-root-data.ts'
-import { useElementState } from './hooks/use-element-state.tsx'
+import { useOptionalUser } from '#app/utils/use-root-data.ts'
 import {
 	CloseIcon,
 	LaptopIcon,
@@ -21,7 +18,6 @@ import {
 	SpinnerIcon,
 	SunIcon,
 } from './icons.tsx'
-import { TeamCircle } from './team-circle.tsx'
 
 type NavbarLinkItem = {
 	id: string
@@ -39,21 +35,14 @@ function useNavbarLinks(): {
 	links: Array<NavbarLinkItem>
 	mobileLinks: Array<{ name: string; to: string }>
 } {
-	const { latestPodcastSeasonLinks } = useRootData()
-
-	const callsTo = latestPodcastSeasonLinks?.calls.latestSeasonPath ?? '/calls'
-
 	const links = React.useMemo<Array<NavbarLinkItem>>(
 		() => [
-			{ id: 'blog', name: 'Blog', to: '/blog' },
-			{ id: 'talks', name: 'Talks', to: '/talks' },
-			{ id: 'courses', name: 'Courses', to: '/courses' },
-			{ id: 'better', name: 'Better', to: '/better' },
-			{ id: 'discord', name: 'Discord', to: '/discord' },
-			{ id: 'calls', name: 'Calls', to: callsTo, activeTo: '/calls' },
+			{ id: 'projects', name: 'Projects', to: '/projects' },
+			{ id: 'experience', name: 'Experience', to: '/experience' },
 			{ id: 'about', name: 'About', to: '/about' },
+			{ id: 'contact', name: 'Contact', to: '/contact' },
 		],
-		[callsTo],
+		[],
 	)
 
 	const mobileLinks = React.useMemo(
@@ -787,84 +776,9 @@ function MobileMenu({ links }: { links: Array<{ name: string; to: string }> }) {
 	)
 }
 
-// Timing durations used to control the speed of the team ring in the profile button.
-// Time is seconds per full rotation
-const durations = {
-	initial: 40,
-	hover: 3,
-	focus: 3,
-	active: 0.25,
-}
-
-function ProfileButton({
-	imageUrl,
-	imageAlt,
-	team,
-	signupEmail,
-}: {
-	imageUrl: string
-	imageAlt: string
-	team: OptionalTeam
-	signupEmail: string | undefined
-}) {
-	const user = useOptionalUser()
-	const controls = useAnimation()
-	const [ref, state] = useElementState()
-	const shouldReduceMotion = useReducedMotion()
-
-	React.useEffect(() => {
-		void controls.start((_, { rotate = 0 }) => {
-			const target =
-				typeof rotate === 'number'
-					? state === 'initial'
-						? rotate - 360
-						: rotate + 360
-					: 360
-
-			return shouldReduceMotion
-				? {}
-				: {
-						rotate: [rotate, target],
-						transition: {
-							duration: durations[state],
-							repeat: Infinity,
-							ease: 'linear',
-						},
-					}
-		})
-	}, [state, controls, shouldReduceMotion])
-
-	return (
-		<Link
-			prefetch="intent"
-			to={user ? '/me' : signupEmail ? '/signup' : '/login'}
-			aria-label={
-				user ? 'My Account' : signupEmail ? 'Finish signing up' : 'Login'
-			}
-			className={clsx(
-				'ml-4 inline-flex h-14 w-14 items-center justify-center rounded-full focus:outline-none',
-			)}
-			ref={ref}
-		>
-			<motion.div className="absolute" animate={controls}>
-				<TeamCircle size={56} team={team} />
-			</motion.div>
-			<img
-				className={clsx('inline h-10 w-10 rounded-full select-none')}
-				src={imageUrl}
-				alt={imageAlt}
-				crossOrigin="anonymous"
-			/>
-		</Link>
-	)
-}
-
 function Navbar() {
 	const navigate = useNavigate()
-	const [team] = useTeam()
-	const { requestInfo, userInfo } = useRootData()
 	const { links, mobileLinks } = useNavbarLinks()
-	const avatar = userInfo ? userInfo.avatar : kodyProfiles[team]
 	const navLinksRef = React.useRef<HTMLDivElement>(null)
 	const searchIconRef = React.useRef<HTMLAnchorElement>(null)
 	const searchInputRef = React.useRef<HTMLInputElement>(null)
@@ -901,7 +815,7 @@ function Navbar() {
 						to="/"
 						className="text-primary underlined block shrink-0 text-2xl font-medium whitespace-nowrap transition focus:outline-none"
 					>
-						<h1>Kent C. Dodds</h1>
+						<h1>Munir Mohammed</h1>
 					</Link>
 					<div className="shrink-0 max-lg:hidden">
 						{isSearchOpen ? (
@@ -959,13 +873,6 @@ function Navbar() {
 							<DarkModeToggle />
 						</div>
 					</div>
-
-					<ProfileButton
-						signupEmail={requestInfo.session.signupEmail}
-						imageUrl={avatar.src}
-						imageAlt={avatar.alt}
-						team={team}
-					/>
 				</div>
 			</nav>
 		</div>
@@ -978,7 +885,7 @@ function matchesPopoverOpen(element: HTMLElement) {
 	try {
 		return element.matches(':popover-open') ? 'matches' : 'no-matches'
 	} catch {
-		// ignore 🤷‍♂️ They probably have a very old browser
+		// ignore — they probably have a very old browser
 		return 'old-browser'
 	}
 }

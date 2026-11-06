@@ -1,7 +1,7 @@
 export function getSocialMetas({
 	url,
-	title = 'Helping people make the world a better place through quality software',
-	description = 'Make the world better with software',
+	title = 'Munir Mohammed — Senior Frontend Developer',
+	description = 'React, Next.js and TypeScript product work from Addis Ababa.',
 	image,
 	keywords = '',
 	ogType = 'website',
@@ -27,8 +27,6 @@ export function getSocialMetas({
 			name: 'twitter:card',
 			content: image ? 'summary_large_image' : 'summary',
 		},
-		{ name: 'twitter:creator', content: '@kentcdodds' },
-		{ name: 'twitter:site', content: '@kentcdodds' },
 		{ name: 'twitter:title', content: title },
 		{ name: 'twitter:description', content: description },
 		{ name: 'twitter:image', content: image },

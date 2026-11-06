@@ -39,3 +39,9 @@ other/wrangler-logs/
 /services/site/.react-router/
 /services/site/other/cache.db
 /services/site-worker/generated-wrangler.jsonc
+
+.npm-cache/
+.tmp/
+.claude/
+.agents/
+

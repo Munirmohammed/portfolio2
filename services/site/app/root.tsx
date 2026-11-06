@@ -168,15 +168,14 @@ export async function loader({ request }: Route.LoaderArgs) {
 		rootSocialMetas: (
 			await import('#app/og/page-meta.server.ts')
 		).buildPageSocialMetas(requestInfo, {
-			title: 'Kent C. Dodds',
+			title: 'Munir Mohammed',
 			description:
-				'Come check out how Kent C. Dodds can help you level up your career as a software engineer.',
+				'Senior frontend developer in Addis Ababa building fast, accessible product interfaces in React, Next.js and TypeScript.',
 			keywords:
-				'Learn React, Testing JavaScript Training, React Training, Learn JavaScript, Learn TypeScript',
+				'React developer, Next.js, TypeScript, frontend engineer, Addis Ababa, Munir Mohammed',
 			socialImage: {
 				kind: 'generic-social',
-				words:
-					'Helping people make the world a better place through quality software.',
+				words: 'Senior frontend developer — React, Next.js, TypeScript.',
 				featuredImage: 'kentcdodds.com/illustrations/kody-flying_blue',
 			},
 		}),
@@ -347,6 +346,7 @@ function App({
 	const fathomQueue = React.useRef<FathomQueue>([])
 	return (
 		<html
+			id="top"
 			lang="en"
 			className={clsx(theme, `set-color-team-current-${team.toLowerCase()}`)}
 		>
@@ -404,7 +404,7 @@ function App({
 				<Navbar />
 				<AppHotkeys />
 				<Outlet />
-				<Spacer size="base" />
+				<Spacer size="3xs" />
 				<Footer image={images[data.randomFooterImageKey]} />
 				<ScrollRestoration nonce={nonce} />
 				{ENV.MODE === 'development' ? null : (

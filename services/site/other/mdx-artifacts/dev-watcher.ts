@@ -225,7 +225,12 @@ async function compileAllDocuments({
 	configureMdxCompileOptions({ allowEmbedFallback: true })
 	const allDocuments = only ?? (await discoverLocalMdxDocuments())
 	if (!allDocuments.length) {
-		throw new Error('No MDX documents found to compile for dev')
+		// A site with no MDX content is a valid state (a portfolio with no blog).
+		// Write an empty manifest so importers still resolve instead of crashing
+		// the dev process.
+		console.info('mdx-dev: no MDX documents found, writing empty manifest')
+		await writeManifest({}, {})
+		return
 	}
 
 	const limit = pLimit(concurrency)

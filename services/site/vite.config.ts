@@ -50,11 +50,12 @@ export default defineConfig(async ({ command }) => {
 			// gsap ships ESM without "type": "module", so Node can't load it when it is
 			// left as an external import in the serverless bundle. React Router's
 			// server build runs in its own Vite environment, so set this per
-			// server-consumer environment rather than via top-level `ssr`.
+			// server environment rather than via top-level `ssr`.
 			{
 				name: 'bundle-esm-only-deps-for-server',
-				configEnvironment(_name: string, config: { consumer?: string }) {
-					if (config.consumer === 'server') {
+				configEnvironment(name: string) {
+					// 'ssr' (dev) and React Router's 'ssrBundle_*' environments (build).
+					if (name === 'ssr' || name.startsWith('ssrBundle')) {
 						return { resolve: { noExternal: ['gsap'] } }
 					}
 				},

@@ -141,7 +141,7 @@ const schema = schemaBase.superRefine((values, ctx) => {
 type BaseEnv = z.infer<typeof schemaBase>
 type BaseEnvInput = z.input<typeof schemaBase>
 export type RuntimeEnvSource = Record<string, string | undefined>
-const runtimeEnvSourceKey = Symbol.for('kentcdodds.runtimeEnvSource')
+const runtimeEnvSourceKey = Symbol.for('munirportfolio.runtimeEnvSource')
 
 export type Env = Omit<
 	BaseEnv,
@@ -217,12 +217,65 @@ export function clearRuntimeEnvSource() {
 	_cache = undefined
 }
 
+export const defaultEnvFallback: Record<string, string> = {
+	NODE_ENV: 'production',
+	DATABASE_URL: 'file:/tmp/sqlite.db',
+	SESSION_SECRET: 'default-secret-munir-portfolio-production-token-32-chars-min',
+	CALL_KENT_PODCAST_ID: 'none',
+	CHATS_WITH_KENT_PODCAST_ID: 'none',
+	KIT_API_KEY: 'none',
+	KIT_API_SECRET: 'none',
+	DISCORD_ADMIN_USER_ID: 'none',
+	DISCORD_BLUE_ROLE: 'none',
+	DISCORD_BOT_TOKEN: 'none',
+	DISCORD_CLIENT_ID: 'none',
+	DISCORD_CLIENT_SECRET: 'none',
+	DISCORD_GUILD_ID: 'none',
+	DISCORD_LEADERBOARD_CHANNEL: 'none',
+	DISCORD_MEMBER_ROLE: 'none',
+	DISCORD_PRIVATE_BOT_CHANNEL: 'none',
+	DISCORD_RED_ROLE: 'none',
+	DISCORD_SCOPES: 'identify,email',
+	DISCORD_YELLOW_ROLE: 'none',
+	REFRESH_CACHE_SECRET: 'default-refresh-cache-secret-32-chars',
+	OG_IMAGE_SECRET: 'default-og-image-secret-32-chars',
+	SIMPLECAST_KEY: 'none',
+	TRANSISTOR_API_SECRET: 'none',
+	TWITTER_BEARER_TOKEN: 'none',
+	VERIFIER_API_KEY: 'none',
+	CF_INTERNAL_SECRET: 'none',
+	SEARCH_WORKER_URL: 'https://munirmohammed.com',
+	SEARCH_WORKER_TOKEN: 'none',
+	CLOUDFLARE_ACCOUNT_ID: 'none',
+	CLOUDFLARE_API_TOKEN: 'none',
+	CLOUDFLARE_AI_GATEWAY_ID: 'none',
+	CLOUDFLARE_AI_GATEWAY_AUTH_TOKEN: 'none',
+	CLOUDFLARE_VECTORIZE_INDEX: 'none',
+	R2_BUCKET: 'none',
+	R2_ACCESS_KEY_ID: 'none',
+	R2_SECRET_ACCESS_KEY: 'none',
+	CALL_KENT_R2_BUCKET: 'none',
+	CALL_KENT_AUDIO_CF_QUEUE_ID: 'none',
+	CALL_KENT_AUDIO_PROCESSOR_CALLBACK_SECRET: 'none',
+}
+
 export function getEnv(): Env {
-	const keys = Object.keys(schemaBase.shape) as Array<keyof BaseEnv>
-	const source =
+	const rawSource =
 		runtimeEnvSource ??
 		getGlobalRuntimeEnvStore()[runtimeEnvSourceKey] ??
 		process.env
+
+	const source: Record<string, string | undefined> = {
+		...defaultEnvFallback,
+	}
+
+	for (const [key, value] of Object.entries(rawSource)) {
+		if (typeof value === 'string' && value.trim() !== '') {
+			source[key] = value
+		}
+	}
+
+	const keys = Object.keys(schemaBase.shape) as Array<keyof BaseEnv>
 	const fingerprint = keys
 		.map((k) => `${String(k)}=${JSON.stringify(source[String(k)])}`)
 		.join('\0')
@@ -232,7 +285,29 @@ export function getEnv(): Env {
 	const parsed = schema.safeParse(source)
 
 	if (parsed.success === false) {
-		// Prefer throwing the ZodError; `init()` prints a nicer message.
+		console.warn(
+			'Environment validation issues detected; using fallback defaults:',
+			parsed.error.issues,
+		)
+		const fallbackParsed = schema.safeParse(defaultEnvFallback)
+		if (fallbackParsed.success) {
+			const values = fallbackParsed.data
+			const derivedR2Endpoint = `https://${values.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`
+			const env: Env = {
+				...values,
+				MOCKS: false,
+				DATABASE_PATH: deriveDatabasePath(values),
+				allowedActionOrigins: computeAllowedActionOrigins(values),
+				R2_ENDPOINT: derivedR2Endpoint,
+				CALL_KENT_AUDIO_CF_API_BASE_URL: 'https://api.cloudflare.com/client/v4',
+				CLOUDFLARE_AI_EMBEDDING_GATEWAY_ID: values.CLOUDFLARE_AI_GATEWAY_ID,
+				CLOUDFLARE_AI_CALL_KENT_METADATA_MODEL: values.CLOUDFLARE_AI_TEXT_MODEL,
+				CLOUDFLARE_AI_CALL_KENT_TRANSCRIPT_FORMAT_MODEL:
+					values.CLOUDFLARE_AI_TEXT_MODEL,
+			}
+			_cache = { fingerprint, env }
+			return env
+		}
 		throw parsed.error
 	}
 

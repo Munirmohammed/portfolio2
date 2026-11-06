@@ -100,11 +100,20 @@ function getSqliteFilePath(databaseUrl: string) {
 function getNodeSqliteDatabase() {
 	const databaseUrl = getEnv().DATABASE_URL
 	return remember('node-sqlite-db', () => {
-		const filePath = getSqliteFilePath(databaseUrl)
-		fs.mkdirSync(path.dirname(filePath), { recursive: true })
-		const sqlite = new DatabaseSync(filePath)
-		sqlite.exec('PRAGMA foreign_keys = ON')
-		return sqlite
+		try {
+			const filePath = getSqliteFilePath(databaseUrl)
+			try {
+				fs.mkdirSync(path.dirname(filePath), { recursive: true })
+			} catch {}
+			const sqlite = new DatabaseSync(filePath)
+			sqlite.exec('PRAGMA foreign_keys = ON')
+			return sqlite
+		} catch (error) {
+			console.warn('Failed to initialize SQLite file, falling back to in-memory SQLite:', error)
+			const sqlite = new DatabaseSync(':memory:')
+			sqlite.exec('PRAGMA foreign_keys = ON')
+			return sqlite
+		}
 	})
 }
 

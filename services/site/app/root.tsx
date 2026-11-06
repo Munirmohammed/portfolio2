@@ -119,12 +119,25 @@ export async function loader({ request }: Route.LoaderArgs) {
 	const timings = {}
 	const loaderStart = performance.now()
 	const requestPath = new URL(request.url).pathname
-	const session = await getSession(request)
-	const [user, clientSession, loginInfoSession] = await Promise.all([
-		session.getUser({ timings }),
-		getClientSession(request, session.getUser({ timings })),
-		getLoginInfoSession(request),
-	])
+
+	let user = null
+	let session: Awaited<ReturnType<typeof getSession>> | null = null
+	let clientSession: Awaited<ReturnType<typeof getClientSession>> | null = null
+	let loginInfoSession: Awaited<ReturnType<typeof getLoginInfoSession>> | null = null
+
+	try {
+		session = await getSession(request)
+		const [u, cs, lis] = await Promise.all([
+			session.getUser({ timings }).catch(() => null),
+			getClientSession(request, null).catch(() => null),
+			getLoginInfoSession(request).catch(() => null),
+		])
+		user = u
+		clientSession = cs
+		loginInfoSession = lis
+	} catch (error) {
+		console.warn('Failed to load session in root loader:', error)
+	}
 
 	const randomFooterImageKeys = Object.keys(illustrationImages)
 	const randomFooterImageKey = randomFooterImageKeys[
@@ -140,14 +153,33 @@ export async function loader({ request }: Route.LoaderArgs) {
 			theme: getTheme(request),
 		},
 		session: {
-			email: loginInfoSession.getEmail(),
-			signupEmail: loginInfoSession.getSignupEmail(),
+			email: loginInfoSession?.getEmail?.() ?? undefined,
+			signupEmail: loginInfoSession?.getSignupEmail?.() ?? undefined,
 		},
+	}
+
+	let rootSocialMetas: any = []
+	try {
+		const { buildPageSocialMetas } = await import('#app/og/page-meta.server.ts')
+		rootSocialMetas = buildPageSocialMetas(requestInfo, {
+			title: 'Munir Mohammed',
+			description:
+				'Senior frontend developer in Addis Ababa building fast, accessible product interfaces in React, Next.js and TypeScript.',
+			keywords:
+				'React developer, Next.js, TypeScript, frontend engineer, Addis Ababa, Munir Mohammed',
+			socialImage: {
+				kind: 'generic-social',
+				words: 'Senior frontend developer — React, Next.js, TypeScript.',
+				featuredImage: 'illustrations/kody-flying_blue',
+			},
+		})
+	} catch (error) {
+		console.warn('Failed to build root social metas:', error)
 	}
 
 	const data = {
 		user,
-		userInfo: user ? await getUserInfo(user, { request, timings }) : null,
+		userInfo: user ? await getUserInfo(user, { request, timings }).catch(() => null) : null,
 		latestPodcastSeasonLinks: PODCAST_LINKS_FALLBACK,
 		ENV: getPublicEnv(),
 		randomFooterImageKey,
@@ -165,20 +197,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 				})
 			: undefined,
 		requestInfo,
-		rootSocialMetas: (
-			await import('#app/og/page-meta.server.ts')
-		).buildPageSocialMetas(requestInfo, {
-			title: 'Munir Mohammed',
-			description:
-				'Senior frontend developer in Addis Ababa building fast, accessible product interfaces in React, Next.js and TypeScript.',
-			keywords:
-				'React developer, Next.js, TypeScript, frontend engineer, Addis Ababa, Munir Mohammed',
-			socialImage: {
-				kind: 'generic-social',
-				words: 'Senior frontend developer — React, Next.js, TypeScript.',
-				featuredImage: 'kentcdodds.com/illustrations/kody-flying_blue',
-			},
-		}),
+		rootSocialMetas,
 	}
 
 	const headers: HeadersInit = new Headers()
@@ -186,9 +205,13 @@ export async function loader({ request }: Route.LoaderArgs) {
 	// the cookie as well. This is a bug in remix that will hopefully be fixed.
 	// we reduce the likelihood of a problem by only committing if the value is
 	// different.
-	await session.getHeaders(headers)
-	await clientSession.getHeaders(headers)
-	await loginInfoSession.getHeaders(headers)
+	try {
+		if (session?.getHeaders) await session.getHeaders(headers)
+		if (clientSession?.getHeaders) await clientSession.getHeaders(headers)
+		if (loginInfoSession?.getHeaders) await loginInfoSession.getHeaders(headers)
+	} catch (error) {
+		console.warn('Failed to commit session headers:', error)
+	}
 	// Add root loader total for production diagnostics (visible in Server-Timing)
 	const rootLoaderTotal = performance.now() - loaderStart
 	const rootTimings = {

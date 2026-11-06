@@ -1,9 +1,10 @@
 # Project context
 
-This is Kent C. Dodds' personal website (kentcdodds.com) — a React Router v7 app
-running on Cloudflare Workers in production, with a workerd-native local dev
-stack (`@cloudflare/vite-plugin` + Miniflare D1/KV). SQL migrations live in
-`services/site/migrations/`; runtime DB access uses `@remix-run/data-table`.
+This is Munir Mohammed's portfolio — a React Router v7 app deployed to Vercel
+(`@vercel/react-router` preset, Node runtime). Cloudflare Workers, D1, KV and R2
+infrastructure has been removed; some legacy Cloudflare-oriented code under
+`services/site/app/utils/` still exists but degrades gracefully when bindings
+are missing. Build with `npm run build`.
 
 ## Prerequisites
 

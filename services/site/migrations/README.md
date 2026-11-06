@@ -26,7 +26,7 @@ npm run db:reset --workspace kentcdodds.com
 ```
 
 CI applies migrations via `wrangler d1 migrations apply` (see
-`services/site-worker` scripts).
+(removed with the Cloudflare workers).
 
 ## D1 constraints
 

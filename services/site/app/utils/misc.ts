@@ -173,13 +173,29 @@ export function createMailtoHref({
  * @returns domain URL (without a ending slash, like: https://kentcdodds.com)
  */
 export function getDomainUrl(request: Request) {
-	const host =
-		request.headers.get('X-Forwarded-Host') ?? request.headers.get('host')
-	if (!host) {
-		throw new Error('Could not determine domain URL.')
-	}
-	const protocol = host.includes('localhost') ? 'http' : 'https'
-	return `${protocol}://${host}`
+	try {
+		const host =
+			request.headers.get('X-Forwarded-Host') ??
+			request.headers.get('x-forwarded-host') ??
+			request.headers.get('host') ??
+			(request.url ? new URL(request.url).host : null)
+		if (host) {
+			const protocol =
+				request.headers.get('X-Forwarded-Proto') ??
+				request.headers.get('x-forwarded-proto') ??
+				(host.includes('localhost') ? 'http' : 'https')
+			return `${protocol}://${host}`
+		}
+	} catch {}
+
+	try {
+		if (request.url) {
+			const parsed = new URL(request.url)
+			return `${parsed.protocol}//${parsed.host}`
+		}
+	} catch {}
+
+	return 'https://munirmohammed.com'
 }
 
 export function isResponse(response: unknown): response is Response {

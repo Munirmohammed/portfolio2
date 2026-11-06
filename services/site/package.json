@@ -38,9 +38,6 @@
     "build:info": "node ../../other/generate-build-info.ts",
     "dev": "cross-env MOCKS=true concurrently -k -n mdx,vite -c blue,green \"node other/mdx-artifacts/dev-watcher.ts\" \"react-router dev\"",
     "db:migration:new": "node ./scripts/db-migration-new.mjs",
-    "db:migrations:apply": "node ./scripts/apply-local-d1-migrations.mjs",
-    "db:seed": "node ./scripts/seed-local-d1.mjs",
-    "db:reset": "npm run db:migrations:apply && npm run db:seed",
     "test:e2e:dev": "cross-env PORT=3000 playwright test",
     "pretest:e2e:run": "npm run build",
     "test:e2e:run": "cross-env CI=1 PORT=8811 playwright test",
@@ -57,7 +54,7 @@
     "typecheck": "react-router typegen && tsc -b .",
     "mdx:compile": "node other/mdx-artifacts/compile-mdx-artifacts.ts",
     "validate": "../../other/validate",
-    "setup": "npm run db:reset && npm run validate && npm run test:e2e:install && npm run test:e2e:run",
+    "setup": "npm run validate && npm run test:e2e:install && npm run test:e2e:run",
     "postbuild": "node ../../other/copy-vercel-output.cjs"
   },
   "dependencies": {
@@ -153,7 +150,6 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.43.0",
     "@cloudflare/workers-types": "^4.20260306.1",
     "@epic-web/config": "^2.0.0",
     "@faker-js/faker": "^10.3.0",
@@ -184,8 +180,7 @@
     "vite-env-only": "^3.0.3",
     "vite-plugin-cjs-interop": "^2.4.2",
     "vite-tsconfig-paths": "^6.1.1",
-    "vitest-browser-react": "^2.0.5",
-    "wrangler": "^4.107.0"
+    "vitest-browser-react": "^2.0.5"
   },
   "prettier": "@epic-web/config/prettier"
 }

@@ -14,7 +14,6 @@ and stable.
 
 - `docs/agents/project-context.md` (setup, commands, portfolio projects)
 - `docs/agents/projects.md` (your two projects: hitkeep and marketing-dashboard, registered under services/site)
-- `docs/agents/cloudflare-worker-architecture.md` (worker topology, deploy, D1)
 - `docs/agents/data-table-conventions.md` (runtime DB access patterns)
 - `docs/agents/code-style.md`
 - `docs/agents/bugfix-workflow.md`

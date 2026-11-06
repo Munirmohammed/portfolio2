@@ -46,3 +46,5 @@ other/wrangler-logs/
 .agents/
 
 /.vercel
+
+services/site/.vercel
